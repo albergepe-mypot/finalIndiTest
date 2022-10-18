@@ -6,6 +6,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import com.inditex.hiring.controller.dto.OfferByPartNumber;
+import com.inditex.hiring.exception.BadResourceRequestException;
+import com.inditex.hiring.exception.NoContentException;
+import com.inditex.hiring.exception.NoSuchResourceFoundException;
 import com.inditex.hiring.model.Producto;
 import com.inditex.hiring.service.IProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,11 @@ public class OfferController {
   @Autowired
   private IProductoService iProductoService;
 
+
+  @GetMapping()
+  public String index() {
+    return "Página principal";
+  }
 
   @RequestMapping(value = "/offer", method = RequestMethod.POST, consumes = "application/json")
   @ResponseStatus(HttpStatus.CREATED)
@@ -48,7 +56,12 @@ public class OfferController {
   @RequestMapping(value = "/offer", method = RequestMethod.GET)
   @ResponseStatus(HttpStatus.OK)
   public List<Producto> getAllOffers() {
+    List<Producto> listProd = iProductoService.getProductos();
 
+    if(listProd!=null && listProd.size()==0)
+    {
+      throw new NoContentException("No content");
+    }
     return iProductoService.getProductos();
   }
 
@@ -56,8 +69,13 @@ public class OfferController {
   @RequestMapping(value = "/offer/{id}", method = RequestMethod.GET)
    @ResponseStatus(HttpStatus.OK)
    public Producto getOfferById(@PathVariable Long id) {
+    Producto produc = iProductoService.getProductoById(id);
 
-    return iProductoService.getProductoById(id);
+    if(produc==null)
+    {
+      throw new NoSuchResourceFoundException("Product " + id + " not found");
+    }
+    return produc;
    }
 
 
