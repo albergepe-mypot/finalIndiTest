@@ -1,18 +1,16 @@
 package com.inditex.hiring.controller;
 
-import com.inditex.hiring.controller.dto.Offer;
-import com.inditex.hiring.controller.dto.OfferByPartNumber;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
+
+import com.inditex.hiring.controller.dto.OfferByPartNumber;
+import com.inditex.hiring.model.Producto;
+import com.inditex.hiring.service.IProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * You can change this controller but please do not change ends points signatures & payloads.
@@ -20,52 +18,82 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OfferController {
 
+  @Autowired
+  private IProductoService iProductoService;
+
+
   @RequestMapping(value = "/offer", method = RequestMethod.POST, consumes = "application/json")
   @ResponseStatus(HttpStatus.CREATED)
-  public void createNewOffer(@RequestBody @Valid Offer offer) {
+  public Producto createNewOffer(@RequestBody @Valid Producto product) {
 
-    //TODO implement it!.
-
+    return iProductoService.saveProducto(product);
   }
 
   @RequestMapping(value = "/offer", method = RequestMethod.DELETE)
   @ResponseStatus(HttpStatus.OK)
   public void deleteAllOffers() {
 
-    //TODO implement it!.
+    iProductoService.deleteAllProductos();
 
   }
 
   @RequestMapping(value = "/offer/{id}", method = RequestMethod.DELETE)
   @ResponseStatus(HttpStatus.OK)
-  public void deleteOfferById(@RequestParam Long id) {
+  public void deleteOfferById(@PathVariable Long id) {
 
-    //TODO implement it!.
+    iProductoService.deleteProducto(id);
 
   }
 
   @RequestMapping(value = "/offer", method = RequestMethod.GET)
   @ResponseStatus(HttpStatus.OK)
-  public List<Offer> getAllOffers() {
+  public List<Producto> getAllOffers() {
 
-    //TODO implement it!.
-    return new ArrayList<>();
-
+    return iProductoService.getProductos();
   }
+
 
   @RequestMapping(value = "/offer/{id}", method = RequestMethod.GET)
-  @ResponseStatus(HttpStatus.OK)
-  public Offer getOfferById(Long offerId) {
+   @ResponseStatus(HttpStatus.OK)
+   public Producto getOfferById(@PathVariable Long id) {
 
-    //TODO implement it!.
-    return new Offer();
-  }
+    return iProductoService.getProductoById(id);
+   }
+
 
   @RequestMapping(value = "brand/{brandId}/partnumber/{partnumber}/offer", method = RequestMethod.GET)
   @ResponseStatus(HttpStatus.OK)
-  public List<OfferByPartNumber> getOfferByPartNumber(Integer brandId, String partnumber) {
+  public List<OfferByPartNumber> getOfferByPartNumber(@PathVariable Integer brandId, @PathVariable String partnumber) {
+    List<Producto> listProd = iProductoService.searchByPartNum(brandId,partnumber);
 
-    //TODO implement it!.
-    return new ArrayList<>();
+    return mappingByPartNumber(listProd);
+
+  }
+
+  private List<OfferByPartNumber> mappingByPartNumber(List<Producto> listProd)
+  {
+    List<OfferByPartNumber> listProdOBPN = new ArrayList<>();
+
+    int cuantos=listProd.size();
+
+    System.out.println("*********RESULTADOS*******************");
+    System.out.println("****************************");
+    for(int i=0;i<cuantos;i++)
+    {
+      OfferByPartNumber obpn = new OfferByPartNumber();
+      obpn.setEndDate(listProd.get(i).getEnd_date());
+      obpn.setStartDate(listProd.get(i).getStart_date());
+      obpn.setPrice(listProd.get(i).getPrice());
+      obpn.setCurrencyIso(listProd.get(i).getCurrency());
+
+
+      System.out.println("desde " + obpn.getStartDate() + " hasta " + obpn.getEndDate() + " precio: " + obpn.getPrice() + " " + obpn.getCurrencyIso());
+
+      listProdOBPN.add(obpn);
+    }
+    System.out.println("****************************");
+    System.out.println("****************************");
+
+    return listProdOBPN;
   }
 }

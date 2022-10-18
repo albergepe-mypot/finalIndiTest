@@ -1,11 +1,17 @@
 package com.inditex.hiring.controller.dto;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Date;
 
 /**
  * Use this POJO on the reponse for brand & partnumber & offer endPoint.
  */
+
+
 public class OfferByPartNumber implements Serializable {
 
   private String startDate;
@@ -27,6 +33,7 @@ public class OfferByPartNumber implements Serializable {
     this.price = price;
     this.currencyIso = currencyIso;
   }
+
 
   public String getStartDate() {
     return startDate;

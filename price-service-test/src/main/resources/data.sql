@@ -1,0 +1,3 @@
+INSERT INTO PRODUCTO ( brand_id, start_date, end_date, price_list, part_number, priority,price,currency) VALUES (1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP , 1, 'PART1' , 0, 35.30, 'EUR');
+INSERT INTO PRODUCTO ( brand_id, start_date, end_date, price_list, part_number, priority,price,currency) VALUES  (1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP , 2, 'PART2' , 1, 45.30, 'EUR');
+INSERT INTO PRODUCTO ( brand_id, start_date, end_date, price_list, part_number, priority,price,currency) VALUES (1,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP , 3, 'PART3' , 2, 55.30, 'EUR');
